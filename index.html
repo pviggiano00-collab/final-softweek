@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☢️ Radio Week</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sakura-pink: #ffb3d9;
+            --lavender: #d4b5ff;
+            --sky-blue: #b3d9ff;
+            --mint: #c4f5e8;
+            --peach: #ffd4d9;
+            --periwinkle: #d9c4ff;
+            --soft-white: #fefefe;
+            --soft-text: #7a6b94;
+            --light-bg: #faf8ff;
+        }
+
+        body {
+            font-family: 'Varela Round', sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            padding: 0;
+            position: relative;
+        }
+
+        /* Background decorations - REMOVED */
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 181, 255, 0.3);
+            box-shadow: 
+                0 20px 60px rgba(179, 217, 255, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Anime-style accent line */
+        .accent-line {
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: linear-gradient(90deg, 
+                var(--sakura-pink) 0%, 
+                var(--lavender) 33%, 
+                var(--sky-blue) 66%, 
+                var(--periwinkle) 100%);
+        }
+
+        .accent-line.top { top: 0; }
+        .accent-line.bottom { bottom: 0; }
+
+        .header {
+            background: linear-gradient(135deg, 
+                rgba(255, 179, 217, 0.08) 0%, 
+                rgba(212, 181, 255, 0.08) 50%,
+                rgba(179, 217, 255, 0.08) 100%);
+            padding: 35px 40px;
+            border-bottom: 1px solid rgba(212, 181, 255, 0.2);
+            position: relative;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--soft-text);
+            letter-spacing: 1px;
+        }
+
+        .radio-icon {
+            font-size: 36px;
+            filter: drop-shadow(0 2px 8px rgba(212, 181, 255, 0.4));
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Quicksand', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            box-shadow: 
+                0 4px 12px rgba(179, 217, 255, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 20px rgba(179, 217, 255, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--sky-blue), var(--periwinkle));
+            color: var(--soft-text);
+        }
+
+        .btn-today {
+            background: linear-gradient(135deg, var(--sakura-pink), var(--peach));
+            color: var(--soft-text);
+        }
+
+        .week-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--lavender), var(--periwinkle));
+            color: var(--soft-text);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 4px 12px rgba(212, 181, 255, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 6px 20px rgba(212, 181, 255, 0.35),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+
+        .week-display {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--soft-text);
+            letter-spacing: 1px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 14px;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+        }
+
+        thead th {
+            background: linear-gradient(135deg, 
+                rgba(179, 217, 255, 0.3), 
+                rgba(212, 181, 255, 0.3));
+            font-weight: 600;
+            color: var(--soft-text);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 10px;
+            border-radius: 16px;
+            border: 1px solid rgba(212, 181, 255, 0.2);
+            box-shadow: 
+                0 4px 12px rgba(179, 217, 255, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .period-cell {
+            background: linear-gradient(135deg, 
+                rgba(255, 179, 217, 0.25), 
+                rgba(255, 212, 217, 0.25));
+            font-weight: 600;
+            color: var(--soft-text);
+            width: 140px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 11px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 179, 217, 0.2);
+            box-shadow: 
+                0 4px 12px rgba(255, 179, 217, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .period-icon {
+            font-size: 16px;
+            margin-right: 8px;
+        }
+
+        .day-header {
+            min-width: 130px;
+        }
+
+        .day-header.today {
+            background: linear-gradient(135deg, 
+                rgba(255, 179, 217, 0.4), 
+                rgba(212, 181, 255, 0.4));
+            border: 1px solid rgba(255, 179, 217, 0.4);
+            box-shadow: 
+                0 6px 16px rgba(255, 179, 217, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+        }
+
+        .day-name {
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .day-date {
+            font-size: 10px;
+            opacity: 1;
+            font-weight: bold;
+            margin-top: 6px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .cell-content {
+            min-height: 100px;
+            cursor: text;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(212, 181, 255, 0.15);
+            border-radius: 16px;
+            border: 1px solid rgba(212, 181, 255, 0.3);
+            box-shadow: 
+                0 2px 8px rgba(179, 217, 255, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            position: relative;
+        }
+
+        .cell-content:hover {
+            border-color: rgba(212, 181, 255, 0.5);
+            box-shadow: 
+                0 4px 16px rgba(179, 217, 255, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+            transform: translateY(-2px);
+        }
+
+        .cell-content.today {
+            background: rgba(255, 179, 217, 0.25);
+            border-color: rgba(255, 179, 217, 0.4);
+        }
+
+        .cell-content.today:hover {
+            border-color: rgba(255, 179, 217, 0.4);
+            box-shadow: 
+                0 4px 16px rgba(255, 179, 217, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            border: 2px solid var(--lavender);
+            padding: 12px;
+            font-family: 'Varela Round', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            resize: none;
+            outline: none;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--soft-text);
+            box-shadow: 
+                0 4px 16px rgba(212, 181, 255, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        }
+
+        textarea::placeholder {
+            color: rgba(122, 107, 148, 0.4);
+        }
+
+        textarea:focus {
+            border-color: var(--sakura-pink);
+            box-shadow: 
+                0 6px 20px rgba(255, 179, 217, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+        }
+
+        .placeholder {
+            color: rgba(122, 107, 148, 0.35);
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .cell-text {
+            white-space: pre-wrap;
+            font-size: 20px;
+            line-height: 1.6;
+            color: var(--soft-text);
+            font-family: 'Varela Round', sans-serif;
+            font-weight: bold;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, 
+                rgba(255, 179, 217, 0.05) 0%, 
+                rgba(179, 217, 255, 0.05) 100%);
+            padding: 24px 40px;
+            border-top: 1px solid rgba(212, 181, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--soft-text);
+        }
+
+        .branding {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .pixel-heart {
+            font-size: 16px;
+            display: inline-block;
+            filter: drop-shadow(0 2px 4px rgba(255, 179, 217, 0.3));
+        }
+
+        .saved-indicator {
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: var(--lavender);
+            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .saved-indicator.show {
+            opacity: 1;
+        }
+
+        /* Anime-style corner decorations */
+        .corner-deco {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            pointer-events: none;
+        }
+
+        .corner-deco::before,
+        .corner-deco::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(135deg, var(--sakura-pink), var(--lavender));
+            border-radius: 2px;
+            opacity: 0.3;
+        }
+
+        .corner-deco::before {
+            width: 40px;
+            height: 2px;
+        }
+
+        .corner-deco::after {
+            width: 2px;
+            height: 40px;
+        }
+
+        .corner-deco.top-left {
+            top: 20px;
+            left: 20px;
+        }
+
+        .corner-deco.top-left::before { top: 0; left: 0; }
+        .corner-deco.top-left::after { top: 0; left: 0; }
+
+        .corner-deco.bottom-right {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .corner-deco.bottom-right::before { bottom: 0; right: 0; }
+        .corner-deco.bottom-right::after { bottom: 0; right: 0; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(212, 181, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--sakura-pink), var(--lavender));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--lavender), var(--sky-blue));
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 24px;
+            }
+            
+            .week-display {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="accent-line top"></div>
+        <div class="corner-deco top-left"></div>
+        <div class="corner-deco bottom-right"></div>
+        
+        <div class="header">
+            <div class="header-top">
+                <div class="header-title">
+                    <span class="radio-icon">☢️</span>
+                    <span>Radio Week</span>
+                </div>
+                <div class="header-buttons">
+                    <button class="btn btn-save" onclick="savePlanner()"><span>💾 Save</span></button>
+                    <button class="btn btn-today" onclick="goToToday()"><span>⭐ Today</span></button>
+                </div>
+            </div>
+            <div class="week-nav">
+                <button class="nav-btn" onclick="previousWeek()">◀</button>
+                <div class="week-display" id="weekDisplay"></div>
+                <button class="nav-btn" onclick="nextWeek()">▶</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="plannerTable">
+                <thead>
+                    <tr id="tableHeader"></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <div class="branding">
+                <span class="pixel-heart">⭐</span>
+                <span>Powered by RadioPako</span>
+            </div>
+            <div class="saved-indicator" id="savedIndicator">✓ Saved!</div>
+        </div>
+        
+        <div class="accent-line bottom"></div>
+    </div>
+
+    <script>
+        let currentWeekStart = getWeekStart(new Date());
+        let plannerData = {};
+        let editingCell = null;
+
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const periods = ['Morning', 'Afternoon'];
+        const periodIcons = { 
+            'Morning': '☀️', 
+            'Afternoon': '🌙'
+        };
+
+        function getWeekStart(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            d.setDate(diff);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function getWeekDates() {
+            return days.map((_, index) => {
+                const date = new Date(currentWeekStart);
+                date.setDate(currentWeekStart.getDate() + index);
+                return date;
+            });
+        }
+
+        function getCellKey(dateKey, period) {
+            return `${dateKey}_${period}`;
+        }
+
+        function loadPlanner() {
+            const saved = localStorage.getItem('anime-planner-data');
+            if (saved) {
+                plannerData = JSON.parse(saved);
+            }
+        }
+
+        function savePlanner() {
+            localStorage.setItem('anime-planner-data', JSON.stringify(plannerData));
+            showSavedIndicator();
+        }
+
+        function showSavedIndicator() {
+            const indicator = document.getElementById('savedIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        function updateCell(dateKey, period, value) {
+            const cellKey = getCellKey(dateKey, period);
+            plannerData[cellKey] = value;
+        }
+
+        function renderTable() {
+            const weekDates = getWeekDates();
+            const today = formatDate(new Date());
+
+            // Render header
+            const headerRow = document.getElementById('tableHeader');
+            headerRow.innerHTML = '<th class="period-cell">Shift</th>';
+            
+            weekDates.forEach((date, index) => {
+                const dateKey = formatDate(date);
+                const isToday = dateKey === today;
+                const th = document.createElement('th');
+                th.className = `day-header ${isToday ? 'today' : ''}`;
+                th.innerHTML = `
+                    <div class="day-name">${days[index]}</div>
+                    <div class="day-date">${date.getDate()}.${(date.getMonth() + 1).toString().padStart(2, '0')}</div>
+                `;
+                headerRow.appendChild(th);
+            });
+
+            // Render body
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            periods.forEach(period => {
+                const tr = document.createElement('tr');
+                
+                // Period cell
+                const periodCell = document.createElement('td');
+                periodCell.className = 'period-cell';
+                periodCell.innerHTML = `<span class="period-icon">${periodIcons[period]}</span>${period}`;
+                tr.appendChild(periodCell);
+
+                // Day cells
+                weekDates.forEach(date => {
+                    const dateKey = formatDate(date);
+                    const cellKey = getCellKey(dateKey, period);
+                    const cellValue = plannerData[cellKey] || '';
+                    const isToday = dateKey === today;
+
+                    const td = document.createElement('td');
+                    td.className = `cell-content ${isToday ? 'today' : ''}`;
+                    td.innerHTML = cellValue 
+                        ? `<div class="cell-text">${escapeHtml(cellValue)}</div>`
+                        : '<div class="placeholder">Write your plans...</div>';
+                    
+                    td.onclick = () => editCell(td, dateKey, period, cellValue);
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+
+            updateWeekDisplay();
+        }
+
+        function editCell(td, dateKey, period, currentValue) {
+            if (editingCell) return;
+            editingCell = td;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = currentValue;
+            textarea.placeholder = 'Your schedule here...';
+            
+            textarea.onblur = () => {
+                const newValue = textarea.value;
+                updateCell(dateKey, period, newValue);
+                savePlanner();
+                editingCell = null;
+                renderTable();
+            };
+
+            textarea.onkeydown = (e) => {
+                if (e.key === 'Escape') {
+                    textarea.blur();
+                }
+            };
+
+            td.innerHTML = '';
+            td.appendChild(textarea);
+            textarea.focus();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updateWeekDisplay() {
+            const weekDates = getWeekDates();
+            const start = weekDates[0];
+            const end = weekDates[6];
+            
+            const display = `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+            document.getElementById('weekDisplay').textContent = display;
+        }
+
+        function previousWeek() {
+            currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+            renderTable();
+        }
+
+        function nextWeek() {
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            renderTable();
+        }
+
+        function goToToday() {
+            currentWeekStart = getWeekStart(new Date());
+            renderTable();
+        }
+
+        // Initialize
+        loadPlanner();
+        renderTable();
+    </script>
+</body>
+</html>
